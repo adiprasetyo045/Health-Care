@@ -1,0 +1,75 @@
+# =============================================================================
+# PYTHON STANDARD
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# =============================================================================
+# VIRTUAL ENVIRONMENT
+# =============================================================================
+.venv/
+venv/
+env/
+ENV/
+.env
+
+# =============================================================================
+# IDE & OS FILES
+# =============================================================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =============================================================================
+# 🧠 MACHINE LEARNING ARTIFACTS (BACKEND)
+# =============================================================================
+
+# 1. MODELS (Binary Files - Generated)
+# File .pkl, .joblib tidak perlu di-push karena bisa dibuat ulang via train_model.py
+Backend/models/*.pkl
+Backend/models/*.joblib
+Backend/models/*.h5
+
+# 2. DATA (Generated & Runtime)
+# Abaikan dataset hasil balancing (karena bisa dibuat via balance_dataset.py)
+Backend/data/diabetes_balanced.csv
+
+# Abaikan Log Prediksi (Data privasi runtime)
+Backend/data/prediction_log.csv
+
+# Abaikan Laporan Teks (Generated)
+Backend/data/*.txt
+Backend/data/reports/
+
+# Abaikan PDF hasil export
+*.pdf
+
+# =============================================================================
+# ⚠️ EXCEPTIONS (FILE YANG WAJIB DI-COMMIT)
+# =============================================================================
+
+# 1. DATASET UTAMA (RAW)
+# Kita keep dataset asli agar orang lain bisa menjalankan project ini
+!Backend/data/diabetes.csv
+
+# 2. MODEL METADATA
+# Kita keep JSON agar bisa melacak histori akurasi model
+!Backend/models/decision_tree_meta.json
+
+# 3. GITKEEPS (Agar folder kosong tetap terupload)
+!Backend/data/.gitkeep
+!Backend/models/.gitkeep
+!Backend/static/images/.gitkeep
+
+# =============================================================================
+# FRONTEND / WEB
+# =============================================================================
+# Jika nanti pakai npm/node
+node_modules/
+package-lock.json
+yarn.lock

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Documentation & Algorithm Math — HealthCare CDSS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --bg-surface: #0f172a;
+            --bg-card: #1e293b;
+            --border: rgba(148, 163, 184, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-dim: rgba(56, 189, 248, 0.1);
+            --success: #22c55e;
+            --warning: #fbbf24;
+            --danger: #f43f5e;
+            --secondary: #818cf8;
+            --gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --code-bg: #0b1121;
+        }
+
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* LAYOUT UTILS */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        /* UTILS */
+        .text-gradient { 
+            background: linear-gradient(to right, #38bdf8, #818cf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* NAVBAR */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .nav-menu a { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin-left: 2rem; }
+        .nav-menu a.active, .nav-menu a:hover { color: var(--accent); }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15), transparent 70%);
+            border-bottom: 1px dashed var(--border);
+        }
+        .badge { 
+            display: inline-block; padding: 6px 16px; 
+            background: rgba(56, 189, 248, 0.1); color: var(--accent); 
+            border-radius: 50px; font-size: 0.85rem; font-weight: 700; 
+            margin-bottom: 1.5rem; border: 1px solid rgba(56, 189, 248, 0.2); 
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .hero p { font-size: 1.2rem; color: var(--text-secondary); max-width: 850px; margin: 0 auto; }
+        
+        /* CONTENT BLOCKS */
+        section { padding: 5rem 0; border-bottom: 1px solid var(--border); }
+        .section-header { margin-bottom: 3rem; }
+        .section-tag {
+            color: var(--accent); font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;
+        }
+        .section-title { font-size: 2.2rem; font-weight: 800; line-height: 1.2; }
+        
+        /* CARDS & PANELS */
+        .card {
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            transition: 0.3s; height: 100%; display: flex; flex-direction: column;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }
+        .card h3 { font-size: 1.25rem; margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 10px; }
+        
+        /* MATH & CODE BLOCKS */
+        .math-box {
+            background: var(--code-bg); border-left: 4px solid var(--secondary);
+            padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;
+            color: #e2e8f0; font-size: 0.9rem; overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .var { color: #f472b6; font-style: italic; }
+        .op { color: #38bdf8; font-weight: bold; }
+        .val { color: #fbbf24; }
+        .comment { color: #64748b; display: block; margin-top: 8px; font-style: italic; }
+        .func { color: #60a5fa; }
+        
+        /* ALGORITHM STEPS */
+        .algo-flow { display: flex; flex-direction: column; gap: 1.5rem; }
+        .step { display: flex; gap: 1.5rem; }
+        .step-idx {
+            flex-shrink: 0; width: 40px; height: 40px; background: var(--bg-surface);
+            border: 1px solid var(--border); color: var(--accent); font-weight: bold;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+        .step-content h4 { color: #fff; margin-bottom: 0.5rem; }
+        
+        /* TABLE */
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .table-custom th { text-align: left; color: var(--text-secondary); font-size: 0.85rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .table-custom td { padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+        .prog-bg { width: 100%; background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; margin-top: 8px; }
+        .prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--secondary)); border-radius: 4px; }
+        
+        /* FEATURE BARS */
+        .feat-row { margin-bottom: 1.25rem; }
+        .feat-meta { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600; }
+        .bar-track { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--gradient); border-radius: 4px; position: relative; }
+        
+        /* CONFUSION MATRIX GRID */
+        .cm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 500px; margin: 0 auto; }
+        .cm-box { padding: 1.5rem; text-align: center; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .cm-val { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+        .cm-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); }
+        
+        /* RISK LEVELS */
+        .risk-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 1rem; margin-top: 1rem;
+        }
+        .risk-item {
+            padding: 1rem; border-radius: 8px; border-left: 3px solid;
+        }
+        
+        /* METRICS GRID */
+        .metrics-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;
+        }
+        .metric-box {
+            text-align: center; padding: 1.5rem; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+        }
+        
+        /* FOOTER */
+        footer { padding: 3rem 0; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .grid-2, .metrics-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .nav-menu a { margin-left: 1rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="/" class="nav-brand">
+            <img src="{{ url_for('static', filename='assets/leaf.svg') }}" width="28" alt="Logo">
+            Health<span class="text-gradient">Care</span>
+        </a>
+        <div class="nav-menu">
+            <a href="/">Home</a>
+            <a href="/about" class="active">Dokumentasi Teknis</a>
+        </div>
+    </div>
+</nav>
+
+<div class="hero">
+    <div class="container">
+        <span class="badge">SYSTEM ARCHITECTURE V2.1</span>
+        <h1>Scientific Documentation &<br><span class="text-gradient">Mathematical Foundations</span></h1>
+        <p>Dokumentasi rinci mengenai algoritma CART, perhitungan probabilitas, validasi statistik, dan mekanisme pengambilan keputusan klinis pada sistem HealthCare CDSS.</p>
+    </div>
+</div>
+
+<main class="container">
+
+    <section id="data-foundation">
+        <div class="section-header">
+            <span class="section-tag">01. Data Foundation</span>
+            <h2 class="section-title">Akuisisi & Rekayasa Data</h2>
+        </div>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>📊 Dataset DiaBD (2025)</h3>
+                <p style="margin-bottom: 1.5rem;">
+                    Basis pengetahuan sistem dibangun di atas dataset <strong>DiaBD (2025)</strong>, yang merupakan kumpulan data klinis terverifikasi dari 63 distrik di Bangladesh. Dataset ini dipilih karena representasi demografis yang luas dan kelengkapan parameter vital.
+                </p>
+                <ul style="color: var(--text-secondary); font-size: 0.95rem;">
+                    <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                        <span style="color: var(--success); margin-right: 8px;">✓</span>
+                        <strong>Total Sampel:</strong> 5.288 Rekam Medis Unik
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                        <span style="color: var(--success); margin-right: 8px;">✓</span>
+                        <strong>Rentang Usia:</strong> 21 - 80 Tahun
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                        <span style="color: var(--success); margin-right: 8px;">✓</span>
+                        <strong>Unit Glukosa:</strong> Dikonversi ke mmol/L (Standar Internasional)
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                        <span style="color: var(--success); margin-right: 8px;">✓</span>
+                        <strong>Distribusi Geografis:</strong> 63 Distrik di Bangladesh
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>🛠️ Preprocessing Pipeline</h3>
+                <div class="algo-flow">
+                    <div class="step">
+                        <div class="step-idx">1</div>
+                        <div class="step-content">
+                            <h4>Data Cleaning & Encoding</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Menghapus <i>missing values</i> (NaN) dan mengonversi variabel kategorikal (Gender, Family History) menjadi numerik (0/1).</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-idx">2</div>
+                        <div class="step-content">
+                            <h4>SMOTE Balancing</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Menggunakan <i>Synthetic Minority Over-sampling Technique</i> untuk menyeimbangkan kelas data, mencegah model bias terhadap pasien sehat.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-idx">3</div>
+                        <div class="step-content">
+                            <h4>Feature Scaling</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Normalisasi parameter numerik (Glukosa, BMI, Tekanan Darah) ke skala 0-1 untuk optimasi algoritma.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="core-algorithm">
+        <div class="section-header">
+            <span class="section-tag">02. Core Intelligence</span>
+            <h2 class="section-title">Mekanisme Algoritma Decision Tree (CART)</h2>
+        </div>
+        
+        <div class="card">
+            <h3>🧠 Konsep Recursive Partitioning</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                Sistem menggunakan algoritma <strong>CART (Classification and Regression Tree)</strong>. Algoritma ini memecah data secara berulang (iteratif) untuk memisahkan kelas Diabetes dan Non-Diabetes dengan memaksimalkan kemurnian data (homogenitas) di setiap simpul anak.
+            </p>
+
+            <div class="grid-2">
+                <div>
+                    <div class="math-box">
+                        <div style="margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            <strong>[RUMUS 1] Entropy (H) - Mengukur Ketidakteraturan</strong>
+                        </div>
+                        H(S) <span class="op">=</span> -p<span class="var">pos</span> <span class="op">×</span> log<span class="val">2</span>(p<span class="var">pos</span>) <span class="op">-</span> p<span class="var">neg</span> <span class="op">×</span> log<span class="val">2</span>(p<span class="var">neg</span>)
+                        <span class="comment">// p_pos: Proporsi Diabetes, p_neg: Proporsi Sehat. (0 = Murni, 1 = Acak)</span>
+                    </div>
+
+                    <div class="math-box">
+                        <div style="margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            <strong>[RUMUS 2] Information Gain (IG) - Penentu Fitur Terbaik</strong>
+                        </div>
+                        IG(S, A) <span class="op">=</span> H(S) <span class="op">-</span> <span class="var">Σ</span> (|Sv| / |S|) <span class="op">×</span> H(Sv)
+                        <span class="comment">// IG menghitung berapa banyak ketidakpastian yang berkurang setelah data dipecah oleh fitur A.</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="card" style="background: rgba(15, 23, 42, 0.6); border: 1px dashed var(--accent);">
+                        <h3>📝 Simulasi Perhitungan Manual</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                            Contoh perhitungan pada <strong>Root Node (100 Pasien)</strong>: 60 Sakit (+), 40 Sehat (-).
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div>
+                                <strong style="color: var(--accent); font-size: 0.9rem;">Langkah 1: Hitung Entropy Awal</strong>
+                                <div class="math-box" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 1rem;">
+                                    p(+) = 0.6, p(-) = 0.4<br>
+                                    H(S) = -(0.6 log2 0.6) - (0.4 log2 0.4)<br>
+                                    <strong>H(S) = 0.971 (Sangat Tidak Murni)</strong>
+                                </div>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent); font-size: 0.9rem;">Langkah 2: Coba Pecah (Glukosa > 140)</strong>
+                                <div class="math-box" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 1rem;">
+                                    - Kiri (<=140): 30 Org (5+, 25-)<br>
+                                    - Kanan (>140): 70 Org (55+, 15-)<br>
+                                    Hitung Weighted Entropy...<br>
+                                    <strong>Gain = 0.971 - 0.65 = 0.321 (Signifikan!)</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success); font-weight: bold;">
+                            ✅ Kesimpulan: "Glukosa" dipilih sebagai pemecah utama karena Gain tinggi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" style="background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.2);">
+            <h3>🚀 Mengapa Decision Tree?</h3>
+            <div class="grid-3">
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Interpretability (Transparansi)</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        Berbeda dengan Neural Networks ("Black Box"), alur keputusan Decision Tree dapat ditelusuri sepenuhnya oleh dokter.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Non-Linearity</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        Mampu menangkap pola kompleks (misal: Risiko tinggi pada usia muda JIKA gula darah sangat ekstrem).
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Robustness</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        Tidak terpengaruh signifikan oleh outlier data klinis yang ekstrem.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="probability-scoring">
+        <div class="section-header">
+            <span class="section-tag">03. Scoring System</span>
+            <h2 class="section-title">Perhitungan Probabilitas & Risiko</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>🌡️ Dari Klasifikasi ke Persentase</h3>
+                <p style="margin-bottom: 1.5rem;">
+                    Standard Decision Tree hanya memberikan output 0 (Sehat) atau 1 (Sakit). Untuk kebutuhan medis, kami menerapkan <strong>Calibrated Classifier (Isotonic Regression)</strong>.
+                </p>
+                
+                <div class="math-box">
+                    <strong style="color: var(--accent);">Probabilitas(Positif)</strong> <span class="op">=</span> <span class="var">Jumlah Sampel Positif di Daun</span> <span class="op">/</span> <span class="var">Total Sampel di Daun</span>
+                </div>
+                
+                <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    Sistem menghitung rasio kelas di "daun" (leaf node) terakhir.
+                    <br>
+                    <em>Contoh:</em> Jika sebuah simpul akhir berisi 100 pasien dengan karakteristik serupa, dan 85 di antaranya positif diabetes, maka <strong>Confidence Score = 85%</strong>.
+                </p>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Interpretasi Level Risiko</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    Skor probabilitas dipetakan ke dalam kategori risiko klinis untuk memudahkan triase:
+                </p>
+                
+                <div class="risk-grid">
+                    <div class="risk-item" style="background: rgba(34, 197, 94, 0.1); border-left-color: var(--success);">
+                        <strong style="display:block; font-size:1.2rem; color:var(--success);">0 - 20%</strong>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Sangat Rendah</span>
+                    </div>
+                    <div class="risk-item" style="background: rgba(56, 189, 248, 0.1); border-left-color: var(--accent);">
+                        <strong style="display:block; font-size:1.2rem; color:var(--accent);">21 - 40%</strong>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Rendah</span>
+                    </div>
+                    <div class="risk-item" style="background: rgba(251, 191, 36, 0.1); border-left-color: var(--warning);">
+                        <strong style="display:block; font-size:1.2rem; color:var(--warning);">41 - 60%</strong>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Sedang (Moderate)</span>
+                    </div>
+                    <div class="risk-item" style="background: rgba(244, 63, 94, 0.1); border-left-color: var(--danger);">
+                        <strong style="display:block; font-size:1.2rem; color:var(--danger);">61 - 100%</strong>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Tinggi / Kritis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="feature-importance">
+        <div class="section-header">
+            <span class="section-tag">04. Clinical Insights</span>
+            <h2 class="section-title">Faktor Prediktif Dominan (Hasil Training)</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Berdasarkan pelatihan model pada 5.288 data pasien, berikut adalah parameter yang memiliki pengaruh terbesar (Information Gain tertinggi) terhadap diagnosis:
+                </p>
+                
+                <div style="background: #111827; padding: 2rem; border-radius: 16px; border: 1px solid var(--border);">
+                    <div class="feat-row">
+                        <div class="feat-meta">
+                            <span>Status Hipertensi (Blood Pressure)</span>
+                            <span style="color: var(--accent);">32.83%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width: 32.83%;"></div></div>
+                    </div>
+
+                    <div class="feat-row">
+                        <div class="feat-meta">
+                            <span>Kadar Glukosa Darah (Fasting)</span>
+                            <span style="color: var(--accent);">14.69%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width: 14.69%;"></div></div>
+                    </div>
+
+                    <div class="feat-row">
+                        <div class="feat-meta">
+                            <span>Body Mass Index (BMI)</span>
+                            <span style="color: var(--accent);">11.15%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width: 11.15%;"></div></div>
+                    </div>
+
+                    <div class="feat-row">
+                        <div class="feat-meta">
+                            <span>Faktor Usia (Age)</span>
+                            <span style="color: var(--accent);">9.42%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width: 9.42%;"></div></div>
+                    </div>
+                    
+                    <div class="feat-row">
+                        <div class="feat-meta">
+                            <span>Riwayat Diabetes Keluarga</span>
+                            <span style="color: var(--accent);">7.21%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width: 7.21%;"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>💡 Temuan Klinis</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Model mengidentifikasi <strong>Hipertensi</strong> sebagai prediktor terkuat (32.83%), bahkan melebihi kadar glukosa sesaat. Ini mengindikasikan korelasi erat antara tekanan darah kronis dengan resistensi insulin (Sindrom Metabolik).
+                </p>
+                
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Atribut Klinis</th>
+                            <th style="width: 15%;">Importance</th>
+                            <th style="width: 60%;">Analisis Medis & Kontribusi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Status Hipertensi</strong>
+                                <div class="font-mono text-gradient" style="font-size: 0.75rem;">(hypertensive)</div>
+                            </td>
+                            <td class="font-mono" style="color: var(--accent); font-weight: bold;">32.83%</td>
+                            <td>
+                                <div class="prog-bg"><div class="prog-fill" style="width: 32.83%;"></div></div>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Indikator komorbiditas vaskular terkuat. Korelasi tinggi dengan resistensi insulin kronis.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Kadar Glukosa</strong>
+                                <div class="font-mono text-gradient" style="font-size: 0.75rem;">(glucose)</div>
+                            </td>
+                            <td class="font-mono" style="color: var(--accent); font-weight: bold;">14.69%</td>
+                            <td>
+                                <div class="prog-bg"><div class="prog-fill" style="width: 14.69%;"></div></div>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Parameter biokimia langsung. Menentukan kondisi hiperglikemia saat ini.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>BMI</strong>
+                                <div class="font-mono text-gradient" style="font-size: 0.75rem;">(bmi)</div>
+                            </td>
+                            <td class="font-mono" style="color: var(--accent); font-weight: bold;">11.15%</td>
+                            <td>
+                                <div class="prog-bg"><div class="prog-fill" style="width: 11.15%;"></div></div>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Indikator obesitas sentral, faktor risiko gaya hidup utama.</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="model-evaluation">
+        <div class="section-header">
+            <span class="section-tag">05. Model Evaluation</span>
+            <h2 class="section-title">Validasi Performa & Confusion Matrix</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card" style="text-align: center;">
+                <h3>🏆 Metrik Utama (Testing Set)</h3>
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--success);">99.26%</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Accuracy Score</div>
+                    </div>
+                    <div class="metric-box">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent);">0.99</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Recall (Sensitivity)</div>
+                    </div>
+                    <div class="metric-box">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--secondary);">0.97</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">F1-Score</div>
+                    </div>
+                    <div class="metric-box">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--warning);">0.99</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">ROC - AUC</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🧩 Confusion Matrix</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    Representasi prediksi benar vs salah pada data uji.
+                </p>
+                <div class="cm-grid">
+                    <div class="cm-box" style="background: rgba(34, 197, 94, 0.1); border-color: var(--success);">
+                        <div class="cm-val" style="color: var(--success);">TP</div>
+                        <div class="cm-label">True Positive (Benar Sakit)</div>
+                    </div>
+                    <div class="cm-box" style="background: rgba(244, 63, 94, 0.1); border-color: var(--danger);">
+                        <div class="cm-val" style="color: var(--danger);">FP</div>
+                        <div class="cm-label">False Positive (Salah Vonis)</div>
+                    </div>
+                    <div class="cm-box" style="background: rgba(244, 63, 94, 0.1); border-color: var(--danger);">
+                        <div class="cm-val" style="color: var(--danger);">FN</div>
+                        <div class="cm-label">False Negative (Gagal Deteksi)</div>
+                    </div>
+                    <div class="cm-box" style="background: rgba(34, 197, 94, 0.1); border-color: var(--success);">
+                        <div class="cm-val" style="color: var(--success);">TN</div>
+                        <div class="cm-label">True Negative (Benar Sehat)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 HealthCare CDSS. All Rights Reserved.</p>
+        <p style="font-size: 0.85rem; margin-top: 5px; opacity: 0.6;">
+            Dataset: DiaBD (Bangladesh, 2025) | Algorithm: CART Decision Tree | Validation: 5-Fold CV<br>
+            Developed based on peer-reviewed methodologies (<i>Journal of Medical Systems, 2025</i>).
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+    "timestamp": "2025-12-23T05:15:34.837348",
+    "metrics": {
+        "accuracy": 0.8673,
+        "precision": 0.9257,
+        "recall": 0.7986,
+        "f1_score": 0.8575,
+        "auc": 0.941
+    },
+    "confusion_matrix": {
+        "tn": 4629,
+        "fp": 317,
+        "fn": 996,
+        "tp": 3950
+    },
+    "bias_analysis": {
+        "recall_class_0": 0.9359,
+        "recall_class_1": 0.7986,
+        "is_balanced": true
+    }
+}

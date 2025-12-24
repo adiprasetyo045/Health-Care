@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Analisis Klinis — HealthCare</title>
+  <link rel="icon" href="/static/assets/leaf.svg" type="image/svg+xml"/>
+  
+  <style>
+    /* BASE CSS - Optimized for Healthcare CDSS */
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.8);
+      --accent: #38bdf8;
+      --text-muted: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', system-ui, sans-serif; 
+      background: radial-gradient(circle at 20% -20%, #0f172a, #020617 60%); 
+      color: #e2e8f0; min-height: 100vh; line-height: 1.5;
+    }
+
+    .topbar { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); padding: 1rem 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; }
+    .brand { color: white; font-size: 1.5rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: var(--card-bg); border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-bottom: 2rem; }
+    
+    /* FORM GRID */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .form-group { display: flex; flex-direction: column; }
+    label { margin-bottom: 0.4rem; color: #cbd5e1; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select { padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; background: rgba(15, 23, 42, 0.6); color: white; font-size: 1rem; transition: 0.3s; }
+    input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+    input[readonly] { background: rgba(15, 23, 42, 0.4); color: var(--text-muted); cursor: not-allowed; }
+    small { color: var(--text-muted); font-size: 0.7rem; margin-top: 4px; line-height: 1.2; }
+    
+    .actions { display: flex; gap: 1rem; justify-content: center; grid-column: 1 / -1; margin-top: 1rem; }
+    .btn-primary { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3); }
+    .btn-ghost { background: transparent; border: 1px solid #475569; color: #cbd5e1; padding: 12px 20px; border-radius: 8px; cursor: pointer; }
+
+    /* RESULT AREA */
+    #resultContainer { display: none; margin-top: 3rem; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .result-header-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 2.5rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+    .prob-badge { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 15px 0; text-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+    
+    .info-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; }
+    .info-card { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 1.8rem; }
+    .info-card h3 { color: #f1f5f9; font-size: 1.1rem; border-bottom: 2px solid rgba(56, 189, 248, 0.3); padding-bottom: 10px; margin-bottom: 20px; }
+    
+    .data-list { list-style: none; padding: 0; }
+    .data-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); font-size: 0.9rem; color: #cbd5e1; }
+    .data-list strong { color: var(--accent); }
+    
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="topbar" style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <a href="/" style="text-decoration: none; color: #cbd5e1; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 1.2rem;" onmouseover="this.style.background='rgba(56, 189, 248, 0.1)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" title="Kembali ke Home">
+        ←
+      </a>
+      <a class="brand" href="/">
+        <img src="/static/assets/leaf.svg" alt="Logo" width="24"/> 
+        <span>Health<span style="color:#38bdf8">Care</span></span>
+      </a>
+    </div>
+  </header>
+  
+  <main class="container">
+    <section class="card">
+      <h2 style="color:#38bdf8; text-align:center; margin-bottom:10px;">🩺 Analisis Risiko Diabetes Mellitus</h2>
+      <p style="text-align:center; color:#94a3b8; margin-bottom:30px; font-size: 0.95rem;">
+        Sistem Pakar Berbasis Dataset DiaBD (2025) & Algoritma Decision Tree
+      </p>
+      
+      <form id="predictionForm" class="grid">
+        <div class="form-group">
+          <label>Age (Tahun)</label>
+          <input type="number" name="age" id="age" required min="21" max="80" placeholder="Contoh: 45" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small> Umur </small>
+        </div>
+        
+        <div class="form-group">
+          <label>Gender</label>
+          <select name="gender" id="gender" required oninvalid="this.setCustomValidity('Harap pilih salah satu')" oninput="this.setCustomValidity('')">
+            <option value="">Pilih...</option>
+            <option value="Male">Laki-laki</option>
+            <option value="Female">Perempuan</option>
+          </select>
+          <small>Jenis kelamin biologis pasien</small>
+        </div>
+
+        <div class="form-group">
+          <label>Pulse Rate (bpm)</label>
+          <input type="number" name="pulse_rate" id="pulse_rate" required placeholder="72" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Frekuensi detak jantung per menit normal 60 - 100</small>
+        </div>
+
+        <div class="form-group">
+          <label>Systolic BP (mmHg)</label>
+          <input type="number" name="systolic_bp" id="systolic_bp" required placeholder="120" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Tekanan darah saat jantung berdenyut normal < 120.</small>
+        </div>
+
+        <div class="form-group">
+          <label>Diastolic BP (mmHg)</label>
+          <input type="number" name="diastolic_bp" id="diastolic_bp" required placeholder="80" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Tekanan darah saat jantung istirahat normal < 80 </small>
+        </div>
+        
+        <div class="form-group">
+          <label>Glucose (mmol/L)</label>
+          <input type="number" step="0.01" name="glucose" id="glucose" required placeholder="5.6" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Kadar gula darah normal 3.9 - 5.5 milimol per liter </small>
+        </div>
+
+        <div class="form-group">
+          <label>Height (m)</label>
+          <input type="number" step="0.01" name="height" id="height" required placeholder="1.70" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Tinggi badan (Meter)</small>
+        </div>
+        
+        <div class="form-group">
+          <label>Weight (kg) </label>
+          <input type="number" step="0.1" name="weight" id="weight" required placeholder="70.5" oninvalid="this.setCustomValidity('Harap isi kolom ini')" oninput="this.setCustomValidity('')">
+          <small>Berat badan (Kilogram)</small>
+        </div>
+
+        <div class="form-group">
+          <label>BMI (Body Mass Index)</label>
+          <input type="number" id="bmi" name="bmi" readonly placeholder="Auto-calculated">
+          <small>Rasio Berat (kg) / Tinggi (m)²</small>
+        </div>
+        
+        <div class="form-group">
+          <label>Family Diabetes </label>
+          <select name="family_diabetes" id="family_diabetes">
+            <option value="No">Tidak</option>
+            <option value="Yes">Ya</option>
+          </select>
+          <small>Riwayat diabetes pada keluarga inti</small>
+        </div>
+
+        <div class="form-group">
+          <label>Hypertensive Status </label>
+          <select name="hypertensive" id="hypertensive">
+            <option value="No">Tidak</option>
+            <option value="Yes">Ya</option>
+          </select>
+          <small>Riwayat/kondisi tekanan darah tinggi</small>
+        </div>
+
+        <div class="form-group">
+          <label>Family Hypertension</label>
+          <select name="family_hypertension" id="family_hypertension">
+            <option value="No">Tidak</option>
+            <option value="Yes">Ya</option>
+          </select>
+          <small>Riwayat darah tinggi pada keluarga</small>
+        </div>
+
+        <div class="form-group">
+          <label>Cardiovascular Dis.</label>
+          <select name="cardiovascular_disease" id="cardiovascular_disease">
+            <option value="No">Tidak</option>
+            <option value="Yes">Ya</option>
+          </select>
+          <small>Riwayat penyakit jantung</small>
+        </div>
+
+        <div class="form-group">
+          <label>Stroke History</label>
+          <select name="stroke" id="stroke">
+            <option value="No">Tidak</option>
+            <option value="Yes">Ya</option>
+          </select>
+          <small>Riwayat serangan stroke sebelumnya</small>
+        </div>
+
+        <div class="actions">
+           <button id="resetBtn" class="btn-ghost" type="button"> Reset</button>
+           <button id="btnPredict" class="btn-primary" type="button"> Test </button>
+        </div>
+      </form>
+      
+      <div id="resultContainer">
+         <div class="result-header-card">
+             <h2 id="resLabel" style="font-size: 2.2rem; margin-bottom: 8px;">-</h2>
+             <p style="color: #cbd5e1;">Status Risiko: <strong id="resRisk">-</strong></p>
+             <div class="prob-badge" id="resProb">0%</div>
+             <p style="font-size:0.85rem; color:#64748b; letter-spacing: 1px;">CONFIDENCE SCORE (Sistem)</p>
+         </div>
+
+         <div class="info-grid">
+             <div class="info-card">
+                 <h3>📋 Data Biometrik Input</h3>
+                 <ul class="data-list" id="inputList"></ul>
+             </div>
+             <div class="info-card">
+                 <h3> Spesifikasi Model Sistem</h3>
+                 <div style="margin-bottom:25px; border-bottom:1px solid #ffffff1a; padding-bottom:15px;">
+                     <p style="margin-bottom: 6px;"><strong>Model:</strong> <span id="modName">Decision Tree (CART)</span></p>
+                     <p style="margin-bottom: 6px;"><strong>Metode:</strong> <span id="modMethod">5-Fold CV (Calibrated)</span></p>
+                     <p><strong>Akurasi (DiaBD):</strong> <span id="modAcc" style="color: var(--accent);">99.26%</span></p>
+                      </div>
+                 <h4></h4>
+                 <ul class="data-list" id="featList">
+                   </ul>
+                 <button id="btnPdf" class="btn-primary" style="width:100%; margin-top:20px; background:linear-gradient(90deg, #ec4899, #8b5cf6);">
+                                     📄 Download Laporan PDF
+                 </button>
+             </div>
+         </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <script>
+    // SCRIPT AUTO-BMI (kg/m^2)
+    document.addEventListener('DOMContentLoaded', () => {
+        const hInput = document.getElementById('height');
+        const wInput = document.getElementById('weight');
+        const bInput = document.getElementById('bmi');
+
+        const calculateBMI = () => {
+            const h = parseFloat(hInput.value);
+            const w = parseFloat(wInput.value);
+            if (h > 0 && w > 0) {
+                bInput.value = (w / (h * h)).toFixed(2);
+            } else {
+                bInput.value = '';
+            }
+        };
+
+        hInput.addEventListener('input', calculateBMI);
+        wInput.addEventListener('input', calculateBMI);
+    });
+  </script>
+  <script src="/static/js/formHandler.js"></script>
+</body>
+</html>

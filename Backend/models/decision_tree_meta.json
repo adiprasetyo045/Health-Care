@@ -1,0 +1,26 @@
+{
+    "algorithm": "Calibrated Decision Tree (Entropy)",
+    "training_date": "2025-12-23 05:14:21",
+    "accuracy_cv": 0.9044,
+    "accuracy_train": 0.9155,
+    "metrics": {
+        "accuracy": 0.9155,
+        "roc_auc": 0.9717,
+        "precision": 0.9158,
+        "recall": 0.9155,
+        "f1_score": 0.9155
+    },
+    "confusion_matrix": {
+        "tn": 4601,
+        "fp": 345,
+        "fn": 491,
+        "tp": 4455
+    },
+    "feature_importance": {
+        "hypertensive": 0.6054,
+        "gender": 0.1747,
+        "glucose": 0.1085,
+        "bmi": 0.0194,
+        "systolic_bp": 0.0188
+    }
+}

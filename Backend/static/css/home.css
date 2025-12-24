@@ -1,0 +1,46 @@
+@import url("../styles.css");
+
+/* Topbar */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    backdrop-filter: blur(8px);
+    background: rgba(2, 6, 23, .55);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.topbar::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(6,182,212,.4), rgba(139,92,246,.4), transparent);
+    pointer-events: none;
+}
+
+/* Brand */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: .2px;
+    transition: transform .15s ease;
+}
+
+.brand:hover {
+    transform: translateY(-1px);
+}
+
+.brand img {
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 0 10px rgba(6,182,212,.5));
+}
