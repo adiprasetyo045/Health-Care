@@ -1,0 +1,12 @@
+itle: "Diabetes Detector"
+description: "ML-based Diabetes Prediction System"
+theme: null  # Disable theme
+safe: true
+exclude:
+  - Backend/
+  - Scripts/
+  - requirements.txt
+  - run_app.py
+  - debug_path.py
+  - .gitignore
+  - .nojekyll
